@@ -21,7 +21,7 @@ export class AIService {
       this.client = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY
       });
-      this.model = 'gpt-4-turbo-preview';
+      this.model = 'gpt-3.5-turbo';
     }
     
     console.log(`🧠 AI Provider: ${this.provider}`);
