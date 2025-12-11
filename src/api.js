@@ -1,6 +1,6 @@
 /**
  * Example of fixed code after AI PR Teammate processes it
- * This demonstrates the improvements the AI makes
+ * This demonstrates the improvements the AI makes.
  */
 
 // ✅ Fixed: Proper error handling
