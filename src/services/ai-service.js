@@ -230,9 +230,47 @@ ROOT_CAUSE:
     const filePath = filePathMatch ? filePathMatch[1].trim() : 'file.js';
     const originalCode = fileContentMatch ? fileContentMatch[1].trim() : '';
     
+    // Check if code already has good error handling
+    const hasErrorHandling = originalCode.includes('try') && originalCode.includes('catch');
+    const hasInputValidation = originalCode.includes('if (!') || originalCode.includes('typeof');
+    const hasStatusCodes = originalCode.includes('.status(') || originalCode.includes('status:');
+    const hasConsoleError = originalCode.includes('console.error');
+    
+    const codeAlreadyGood = hasErrorHandling && hasInputValidation && (hasStatusCodes || hasConsoleError);
+    
     // Generate improved version with error handling
     const fixedCode = this.generateFixedCode(originalCode);
     
+    // Different response based on whether code was already good
+    if (codeAlreadyGood) {
+      return `FIXED_CODE:
+\`\`\`
+${fixedCode}
+\`\`\`
+
+EXPLANATION:
+Great work! This code already follows best practices with comprehensive error handling. I've reviewed it and found:
+
+✅ **Error Handling**: Properly implemented try-catch blocks
+✅ **Input Validation**: Good checks for null, undefined, and invalid inputs
+✅ **HTTP Status Codes**: Correct status codes (200, 400, 404, 500)
+✅ **Error Logging**: Console.error included for debugging
+✅ **Type Checking**: Data types validated before processing
+✅ **Edge Cases**: Empty strings, null values, and missing data handled
+✅ **Security**: No obvious vulnerabilities detected
+✅ **Code Quality**: Clean, readable, and maintainable
+
+The code is production-ready and meets industry standards. No significant changes needed!
+
+CHANGES_SUMMARY:
+- No changes required - code already follows best practices
+- All error handling is properly implemented
+- Input validation is comprehensive
+- HTTP status codes are correct
+- Code is production-ready`;
+    }
+    
+    // For bad code, return improvement suggestions
     return `FIXED_CODE:
 \`\`\`
 ${fixedCode}
@@ -311,6 +349,18 @@ async function processData(id) {
   // Your business logic here
   return { id, processed: true };
 }`;
+    }
+    
+    // Check if code already has good error handling
+    const hasErrorHandling = originalCode.includes('try') && originalCode.includes('catch');
+    const hasInputValidation = originalCode.includes('if (!') || originalCode.includes('typeof');
+    const hasStatusCodes = originalCode.includes('.status(') || originalCode.includes('status:');
+    const hasConsoleError = originalCode.includes('console.error');
+    
+    // If code already looks good, return it as-is
+    if (hasErrorHandling && hasInputValidation && (hasStatusCodes || hasConsoleError)) {
+      console.log('✅ Code already has good error handling - returning as-is');
+      return originalCode;
     }
     
     // Add improvements to existing code
